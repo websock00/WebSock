@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Websock — Calcetas a domicilio</title>
+<title>WebSock — Calcetas a domicilio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -236,7 +236,7 @@ h2 {
         <p>Blancas · Activo</p>
       </div>
 
-      <!-- 🔥 NUEVO MIXPACK -->
+      <!--  NUEVO MIXPACK -->
       <div class="card" onclick="openPack('MixPack','colores surtidos')">
         <div class="card-image">
           <img src="mix.jpg">
@@ -281,7 +281,7 @@ let selectedDesc = "";
 let selectedQty = 0;
 let selectedPrice = 0;
 
-const phoneNumber = "521XXXXXXXXXX";
+const phoneNumber = "9642154328";
 
 function openPack(pack, desc) {
   selectedPack = pack;
@@ -303,9 +303,10 @@ function selectOption(qty, price) {
 function goWhatsApp() {
   const message =
     `Hola 👋 Quiero comprar el ${selectedPack} (${selectedDesc}) — ${selectedQty} pares por $${selectedPrice}`;
-  window.open(`https://wa.me/${9642154328}?text=${encodeURIComponent(message)}`, "_blank");
+  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
 }
 </script>
 
 </body>
 </html>
+
