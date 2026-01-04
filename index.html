@@ -142,6 +142,7 @@ h2 { font-size: 28px; margin-bottom: 12px; }
 .flow-container {
   position: relative;
   min-height: 400px; /* Altura mínima para mantener el layout */
+  scroll-margin-top: 20px; /* Añade espacio para scroll suave */
 }
 
 /* ===== FLOW SECTIONS ===== */
@@ -155,6 +156,7 @@ h2 { font-size: 28px; margin-bottom: 12px; }
   position: absolute;
   width: 100%;
   left: 0;
+  top: 0; /* Asegura que todas las secciones comiencen desde arriba */
   visibility: hidden;
 }
 
@@ -164,6 +166,7 @@ h2 { font-size: 28px; margin-bottom: 12px; }
   pointer-events: auto;
   position: relative;
   visibility: visible;
+  min-height: 70vh; /* Asegura altura mínima en móviles */
 }
 
 /* ===== PRICES ===== */
@@ -242,6 +245,26 @@ h2 { font-size: 28px; margin-bottom: 12px; }
 
 .card:hover .card-image img {
   transform: scale(1.06);
+}
+
+/* Mejoras para dispositivos móviles */
+@media (max-width: 768px) {
+  .flow.active {
+    padding-top: 20px; /* Espacio extra en móviles */
+  }
+  
+  /* Mejorar el scroll en iOS */
+  html {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  section {
+    padding: 60px 0; /* Menos padding en móviles */
+  }
+  
+  .flow-container {
+    min-height: 300px; /* Menor altura en móviles */
+  }
 }
 
 </style>
@@ -342,6 +365,19 @@ function show(section) {
   // Muestra la sección solicitada
   setTimeout(() => {
     document.getElementById(section).classList.add("active");
+    
+    // Desplazar la vista hacia el contenedor principal
+    const flowContainer = document.querySelector('.flow-container');
+    if (flowContainer) {
+      // Calcula la posición del contenedor relativa al viewport
+      const containerTop = flowContainer.getBoundingClientRect().top + window.pageYOffset;
+      
+      // Desplaza suavemente a la posición del contenedor
+      window.scrollTo({
+        top: containerTop - 20, // Un pequeño margen para mejor visualización
+        behavior: 'smooth'
+      });
+    }
   }, 50);
 }
 
@@ -372,6 +408,30 @@ function goWhatsApp() {
     `Hola 👋 Quiero el ${selectedPack} (${selectedDesc}) — ${selectedQty} pares por $${selectedPrice}`;
   window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`, "_blank");
 }
+
+// Asegura que la página comience en la parte superior al recargar
+window.addEventListener('load', function() {
+  // Solo para móviles - previene scroll automático del navegador
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  }
+});
+
+// Detectar cambios en la orientación del dispositivo
+window.addEventListener('orientationchange', function() {
+  setTimeout(() => {
+    const flowContainer = document.querySelector('.flow-container');
+    if (flowContainer) {
+      const containerTop = flowContainer.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: containerTop - 20,
+        behavior: 'smooth'
+      });
+    }
+  }, 300);
+});
 </script>
 
 </body>
