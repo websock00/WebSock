@@ -36,6 +36,7 @@ body {
   background: var(--bg);
   color: var(--text);
   transition: background .3s, color .3s;
+  overflow-x: hidden; /* Previene scroll horizontal */
 }
 
 /* ===== TOGGLE ===== */
@@ -49,6 +50,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  z-index: 1000; /* Asegura que esté por encima de todo */
 }
 
 /* ===== GENERAL ===== */
@@ -136,9 +138,35 @@ h2 { font-size: 28px; margin-bottom: 12px; }
 
 .card p { color: var(--muted); }
 
-/* ===== FLOW ===== */
-.hidden { display: none; }
+/* ===== FLOW CONTAINER ===== */
+.flow-container {
+  position: relative;
+  min-height: 400px; /* Altura mínima para mantener el layout */
+}
 
+/* ===== FLOW SECTIONS ===== */
+.flow {
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  transition:
+    opacity .45s ease,
+    transform .55s cubic-bezier(.22,.61,.36,1);
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  visibility: hidden;
+}
+
+.flow.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  position: relative;
+  visibility: visible;
+}
+
+/* ===== PRICES ===== */
 .prices {
   max-width: 420px;
   margin: 40px auto;
@@ -185,22 +213,6 @@ h2 { font-size: 28px; margin-bottom: 12px; }
   gap: 12px;
 }
 
-  /* ===== APPLE-LIKE TRANSITIONS ===== */
-.flow {
-  opacity: 0;
-  transform: translateY(18px) scale(0.98);
-  transition:
-    opacity .45s ease,
-    transform .55s cubic-bezier(.22,.61,.36,1);
-  pointer-events: none;
-}
-
-.flow.active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
 /* ===== PRICE BUTTONS ===== */
 .prices button {
   background: var(--card);
@@ -240,90 +252,94 @@ h2 { font-size: 28px; margin-bottom: 12px; }
 <div class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</div>
 
 <div class="logo-banner">
-  <img src="logo-banner.png">
+  <img src="logo-banner.png" alt="WebSock Banner">
 </div>
 
 <section>
   <div class="container">
     <div class="editorial-card">
-      <img src="socks-hero.jpeg">
+      <img src="socks-hero.jpeg" alt="Calcetas WebSock">
     </div>
     <p class="hero-text">Calcetas esenciales, cómodas y funcionales.</p>
   </div>
 </section>
 
-<section id="home" class="flow active">
-  <div class="container">
-    <h2>Paquetes disponibles</h2>
+<!-- Contenedor principal para las secciones interactivas -->
+<div class="flow-container">
+  <section id="home" class="flow active">
+    <div class="container">
+      <h2>Paquetes disponibles</h2>
 
-    <div class="packs">
+      <div class="packs">
 
-      <div class="card" onclick="openPack('WorkPack','Negras')">
-        <div class="card-image">
-          <img src="work.jpg" alt="WorkPack">
+        <div class="card" onclick="openPack('WorkPack','Negras')">
+          <div class="card-image">
+            <img src="work.jpg" alt="WorkPack">
+          </div>
+          <h3>WorkPack</h3>
+          <p>Negras · Uso diario</p>
         </div>
-        <h3>WorkPack</h3>
-        <p>Negras · Uso diario</p>
-      </div>
 
-      <div class="card" onclick="openPack('HomePack','Grises')">
-        <div class="card-image">
-          <img src="home.jpeg" alt="HomePack">
+        <div class="card" onclick="openPack('HomePack','Grises')">
+          <div class="card-image">
+            <img src="home.jpeg" alt="HomePack">
+          </div>
+          <h3>HomePack</h3>
+          <p>Grises · Casual</p>
         </div>
-        <h3>HomePack</h3>
-        <p>Grises · Casual</p>
-      </div>
 
-      <div class="card" onclick="openPack('SportPack','Blancas')">
-        <div class="card-image">
-          <img src="sport.jpg" alt="SportPack">
+        <div class="card" onclick="openPack('SportPack','Blancas')">
+          <div class="card-image">
+            <img src="sport.jpg" alt="SportPack">
+          </div>
+          <h3>SportPack</h3>
+          <p>Blancas · Activo</p>
         </div>
-        <h3>SportPack</h3>
-        <p>Blancas · Activo</p>
-      </div>
 
-      <div class="card" onclick="openPack('MixPack','Surtidas')">
-        <div class="card-image">
-          <img src="mix.jpg" alt="MixPack">
+        <div class="card" onclick="openPack('MixPack','Surtidas')">
+          <div class="card-image">
+            <img src="mix.jpg" alt="MixPack">
+          </div>
+          <h3>MixPack</h3>
+          <p>Negro · Gris · Blanco</p>
         </div>
-        <h3>MixPack</h3>
-        <p>Negro · Gris · Blanco</p>
-      </div>
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-<section id="catalog" class="flow">
-  <div class="container">
-    <h2 id="packTitle"></h2>
-    <div class="prices">
-      <button onclick="selectOption(1,20)">1 par — $20</button>
-      <button onclick="selectOption(4,50)">4 pares — $50</button>
-      <button onclick="selectOption(10,150)">10 pares — $150</button>
+  <section id="catalog" class="flow">
+    <div class="container">
+      <h2 id="packTitle"></h2>
+      <div class="prices">
+        <button onclick="selectOption(1,20)">1 par — $20</button>
+        <button onclick="selectOption(4,50)">4 pares — $50</button>
+        <button onclick="selectOption(10,150)">10 pares — $150</button>
+      </div>
+      <button class="back-btn" onclick="goBack('home')">← Volver</button>
     </div>
-    <button class="back-btn" onclick="goBack('home')">← Volver</button>
-  </div>
-</section>
+  </section>
 
-<section id="buy" class="flow">
-  <div class="container" style="text-align:center;">
-    <h2>Finaliza tu compra</h2>
-    <button class="buy-btn" onclick="goWhatsApp()">Comprar por WhatsApp</button>
-    <br><br>
-    <button class="back-btn" onclick="goBack('catalog')">← Cambiar cantidad</button>
-  </div>
-</section>
+  <section id="buy" class="flow">
+    <div class="container" style="text-align:center;">
+      <h2>Finaliza tu compra</h2>
+      <button class="buy-btn" onclick="goWhatsApp()">Comprar por WhatsApp</button>
+      <br><br>
+      <button class="back-btn" onclick="goBack('catalog')">← Cambiar cantidad</button>
+    </div>
+  </section>
+</div>
 
 <script>
 let selectedPack="", selectedDesc="", selectedQty=0, selectedPrice=0;
 const phoneNumber = "9642154328";
 
 function show(section) {
+  // Oculta todas las secciones
   document.querySelectorAll(".flow").forEach(s => {
     s.classList.remove("active");
   });
+  // Muestra la sección solicitada
   setTimeout(() => {
     document.getElementById(section).classList.add("active");
   }, 50);
@@ -332,7 +348,7 @@ function show(section) {
 function openPack(pack, desc) {
   selectedPack = pack;
   selectedDesc = desc;
-  packTitle.innerText = `${pack} (${desc})`;
+  document.getElementById('packTitle').innerText = `${pack} (${desc})`;
   show("catalog");
 }
 
@@ -360,6 +376,3 @@ function goWhatsApp() {
 
 </body>
 </html>
-
-
-
