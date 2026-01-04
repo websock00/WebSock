@@ -5,38 +5,71 @@
 <title>WebSock — Calcetas a domicilio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- PWA Meta Tags -->
+<link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+<meta name="theme-color" content="#1e1e1e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <style>
 :root {
-  --bg: #403636;
-  --card: #ffffff;
-  --text: #111;
-  --muted: #666;
-  --radius: 18px;
-}
-
-body.light {
-  --bg: #f5f5f5;
-  --card: #ffffff;
-  --text: #111;
-  --muted: #666;
-}
-
-body.dark {
   --bg: #1e1e1e;
   --card: #2a2a2a;
   --text: #f2f2f2;
-  --muted: #aaa;
+  --muted: #9a9a9a;
+  --accent: #8f8f8f;
+  --radius: 20px;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+body.light {
+  --bg: #f6f6f6;
+  --card: #ffffff;
+  --text: #111;
+  --muted: #777;
+  --accent: #666;
+  --border: rgba(0, 0, 0, 0.1);
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg);
   color: var(--text);
-  transition: background .3s, color .3s;
-  overflow-x: hidden; /* Previene scroll horizontal */
+  transition: background .3s ease, color .3s ease;
+  overflow-x: hidden;
+}
+
+/* ===== STATES ===== */
+.js-loading .flow-container {
+  opacity: 0;
+}
+
+.js-loaded .flow-container {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* ===== TOGGLE ===== */
@@ -46,27 +79,30 @@ body {
   right: 18px;
   background: var(--card);
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 8px 14px;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 14px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.15);
-  z-index: 1000; /* Asegura que esté por encima de todo */
+  box-shadow: 0 8px 30px rgba(0,0,0,.2);
+  z-index: 1000;
+  border: 1px solid var(--border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 /* ===== GENERAL ===== */
 .container {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: auto;
-  padding: 0 20px;
+  padding: 0 22px;
 }
 
 section { padding: 90px 0; }
 
-h2 { font-size: 28px; margin-bottom: 12px; }
-
-.section-subtitle {
-  color: var(--muted);
-  font-size: 16px;
+h2 {
+  font-size: 26px;
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
 }
 
 /* ===== BANNER ===== */
@@ -80,114 +116,166 @@ h2 { font-size: 28px; margin-bottom: 12px; }
   width: 100%;
   height: 100%;
   object-fit: cover;
+  content-visibility: auto;
 }
 
 /* ===== HERO ===== */
+.hero-section {
+  text-align: center;
+}
+
 .editorial-card {
-  aspect-ratio: 4 / 5;
   border-radius: var(--radius);
   overflow: hidden;
+  margin-top: 40px;
 }
 
 .editorial-card img {
   width: 100%;
-  height: 100%;
+  height: 65vh;
   object-fit: cover;
+  content-visibility: auto;
 }
 
 .hero-text {
-  max-width: 540px;
-  margin: 42px auto 0;
-  text-align: center;
+  max-width: 520px;
+  margin: 28px auto 0;
   color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* ===== WHY ===== */
+.why-section {
+  max-width: 520px;
+  margin: auto;
+  text-align: center;
+}
+
+.why-section p {
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 /* ===== PACKS ===== */
 .packs {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 30px;
-  margin-top: 50px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 34px;
+  margin-top: 80px;
 }
 
 .card {
   background: var(--card);
   border-radius: var(--radius);
-  padding: 18px;
+  padding: 22px;
   cursor: pointer;
-  transition: .25s;
+  transition: transform .35s cubic-bezier(.22,.61,.36,1),
+              box-shadow .35s ease;
+  border: 1px solid var(--border);
+  will-change: transform;
+  backface-visibility: hidden;
+  animation: fadeInUp 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 0.1s);
 }
 
 .card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 45px rgba(0,0,0,.15);
+  box-shadow: 0 25px 60px rgba(0,0,0,.25);
 }
 
 .card-image {
   aspect-ratio: 1;
-  border-radius: 14px;
+  border-radius: 16px;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
+  position: relative;
 }
 
 .card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform .6s cubic-bezier(.22,.61,.36,1);
+  content-visibility: auto;
 }
 
-.card p { color: var(--muted); }
+.card:hover .card-image img {
+  transform: scale(1.06);
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 15px;
+}
 
 /* ===== FLOW CONTAINER ===== */
 .flow-container {
   position: relative;
-  min-height: 400px; /* Altura mínima para mantener el layout */
-  scroll-margin-top: 20px; /* Añade espacio para scroll suave */
+  min-height: 420px;
+  scroll-margin-top: 20px;
 }
 
 /* ===== FLOW SECTIONS ===== */
 .flow {
   opacity: 0;
-  transform: translateY(18px) scale(0.98);
-  transition:
-    opacity .45s ease,
-    transform .55s cubic-bezier(.22,.61,.36,1);
+  transform: translateY(16px);
   pointer-events: none;
   position: absolute;
   width: 100%;
   left: 0;
-  top: 0; /* Asegura que todas las secciones comiencen desde arriba */
+  top: 0;
+  transition: opacity .45s ease,
+              transform .55s cubic-bezier(.22,.61,.36,1);
   visibility: hidden;
 }
 
 .flow.active {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   pointer-events: auto;
   position: relative;
   visibility: visible;
-  min-height: 70vh; /* Asegura altura mínima en móviles */
+  min-height: 70vh;
 }
 
 /* ===== PRICES ===== */
 .prices {
   max-width: 420px;
-  margin: 40px auto;
+  margin: 50px auto;
 }
 
 .prices button {
   width: 100%;
   padding: 18px;
   margin-bottom: 14px;
-  border-radius: 14px;
-  border: none;
+  border-radius: 16px;
+  border: 2px solid rgba(37, 205, 211, 0.35);
   background: var(--card);
+  color: var(--text);
   font-size: 16px;
   cursor: pointer;
+  transition: transform .2s ease,
+              box-shadow .25s ease,
+              border-color .25s ease;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .prices button:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  border-color: #23cfc9;
+  box-shadow: 0 12px 35px rgba(27, 144, 167, 0.25);
+}
+
+.prices button:active {
+  transform: scale(0.97);
+}
+
+.prices button.selected {
+  border-color: #25D366;
+  background: rgba(37, 211, 102, 0.05);
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
 }
 
 /* ===== NAV BUTTONS ===== */
@@ -196,94 +284,156 @@ h2 { font-size: 28px; margin-bottom: 12px; }
   background: transparent;
   border: 1px solid var(--muted);
   color: var(--text);
-  padding: 12px 20px;
+  padding: 12px 22px;
   border-radius: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ===== BUY ===== */
 .buy-btn {
   margin-top: 30px;
   background: #25D366;
-  color: white;
-  font-size: 20px;
-  padding: 18px 28px;
-  border: none;
+  color: #fff;
+  font-size: 18px;
+  padding: 18px 30px;
   border-radius: var(--radius);
+  border: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  transition: transform .2s ease,
+              box-shadow .25s ease;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-/* ===== PRICE BUTTONS ===== */
-.prices button {
-  background: var(--card);
-  border: 2px solid rgba(37, 205, 211, 0.35);
-  color: var(--text);
-  font-weight: 500;
-  transition:
-    transform .2s ease,
-    box-shadow .25s ease,
-    border-color .25s ease;
-}
-
-.prices button:hover {
-  border-color: #23cfc9;
-  box-shadow: 0 10px 30px rgba(27, 144, 167, 0.25);
+.buy-btn:hover {
   transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(37, 211, 102, 0.3);
 }
 
-/* Feedback al seleccionar */
-.prices button:active {
-  transform: scale(0.97);
+.buy-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-.card-image img {
-  transition: transform .6s cubic-bezier(.22,.61,.36,1);
+/* ===== CONNECTION BANNER ===== */
+#connection-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+  z-index: 10001;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
 }
 
-.card:hover .card-image img {
-  transform: scale(1.06);
+/* ===== FOOTER ===== */
+footer {
+  padding: 90px 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
 }
 
-/* Mejoras para dispositivos móviles */
+/* ===== SKELETON LOADER ===== */
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 25%, var(--card) 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--radius);
+}
+
+/* ===== MEJORAS PARA MÓVILES ===== */
 @media (max-width: 768px) {
-  .flow.active {
-    padding-top: 20px; /* Espacio extra en móviles */
+  section {
+    padding: 60px 0;
   }
   
-  /* Mejorar el scroll en iOS */
+  .flow.active {
+    padding-top: 20px;
+  }
+  
+  .flow-container {
+    min-height: 350px;
+  }
+  
+  .packs {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 50px;
+  }
+  
+  .hero-text {
+    font-size: 16px;
+  }
+  
   html {
     -webkit-overflow-scrolling: touch;
   }
   
-  section {
-    padding: 60px 0; /* Menos padding en móviles */
-  }
-  
-  .flow-container {
-    min-height: 300px; /* Menor altura en móviles */
+  .card {
+    animation-delay: calc(var(--i, 0) * 0.05s);
   }
 }
 
+/* ===== DARK MODE SPECIFIC ===== */
+@media (prefers-color-scheme: dark) {
+  body:not(.light) {
+    --bg: #1e1e1e;
+    --card: #2a2a2a;
+    --text: #f2f2f2;
+  }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .theme-toggle,
+  .back-btn,
+  .buy-btn {
+    display: none;
+  }
+}
 </style>
 </head>
 
-<body class="dark">
+<body class="dark js-loading" onload="document.body.classList.replace('js-loading', 'js-loaded')">
 
 <div class="theme-toggle" onclick="toggleTheme()">🌙 / ☀️</div>
 
 <div class="logo-banner">
-  <img src="logo-banner.png" alt="WebSock Banner">
+  <img src="logo-banner.png" alt="WebSock Banner" onerror="handleImageError(this)">
 </div>
 
-<section>
+<section class="hero-section">
   <div class="container">
     <div class="editorial-card">
-      <img src="socks-hero.jpeg" alt="Calcetas WebSock">
+      <img src="socks-hero.jpeg" alt="Calcetas WebSock" onerror="handleImageError(this)">
     </div>
-    <p class="hero-text">Calcetas esenciales, cómodas y funcionales.</p>
+    <p class="hero-text">Calcetas esenciales, cómodas y funcionales. Diseño simple. Uso real. Entregadas directo a tu puerta.</p>
+  </div>
+</section>
+
+<section class="why-section">
+  <div class="container">
+    <h2>¿Por qué WebSock?</h2>
+    <p>
+      No modas.<br>
+      No logos gigantes.<br>
+      No promesas vacías.<br><br>
+      Solo calcetas que funcionan.
+    </p>
   </div>
 </section>
 
@@ -291,42 +441,40 @@ h2 { font-size: 28px; margin-bottom: 12px; }
 <div class="flow-container">
   <section id="home" class="flow active">
     <div class="container">
-      <h2>Paquetes disponibles</h2>
+      <h2>¿Dónde las usarás?</h2>
 
       <div class="packs">
-
         <div class="card" onclick="openPack('WorkPack','Negras')">
           <div class="card-image">
-            <img src="work.jpg" alt="WorkPack">
+            <img src="work.jpg" alt="WorkPack" onerror="handleImageError(this)">
           </div>
-          <h3>WorkPack</h3>
+          <h3>Trabajo</h3>
           <p>Negras · Uso diario</p>
         </div>
 
         <div class="card" onclick="openPack('HomePack','Grises')">
           <div class="card-image">
-            <img src="home.jpeg" alt="HomePack">
+            <img src="home.jpeg" alt="HomePack" onerror="handleImageError(this)">
           </div>
-          <h3>HomePack</h3>
+          <h3>Casa</h3>
           <p>Grises · Casual</p>
         </div>
 
         <div class="card" onclick="openPack('SportPack','Blancas')">
           <div class="card-image">
-            <img src="sport.jpg" alt="SportPack">
+            <img src="sport.jpg" alt="SportPack" onerror="handleImageError(this)">
           </div>
-          <h3>SportPack</h3>
+          <h3>Movimiento</h3>
           <p>Blancas · Activo</p>
         </div>
 
         <div class="card" onclick="openPack('MixPack','Surtidas')">
           <div class="card-image">
-            <img src="mix.jpg" alt="MixPack">
+            <img src="mix.jpg" alt="MixPack" onerror="handleImageError(this)">
           </div>
-          <h3>MixPack</h3>
+          <h3>Mix</h3>
           <p>Negro · Gris · Blanco</p>
         </div>
-
       </div>
     </div>
   </section>
@@ -353,75 +501,47 @@ h2 { font-size: 28px; margin-bottom: 12px; }
   </section>
 </div>
 
+<footer>
+  WebSock — Calcetas a domicilio<br>
+  Diseñado para el uso real.<br>
+  <small id="pageLoadInfo" style="opacity:0.5; margin-top:10px; display:block; font-size:12px;"></small>
+</footer>
+
 <script>
-let selectedPack="", selectedDesc="", selectedQty=0, selectedPrice=0;
+// ===== STATE MANAGEMENT =====
+let selectedPack = "", selectedDesc = "", selectedQty = 0, selectedPrice = 0;
+let isLoading = false;
 const phoneNumber = "9642154328";
 
+// ===== CORE FUNCTIONS =====
 function show(section) {
-  // Oculta todas las secciones
+  if (isLoading) return;
+  isLoading = true;
+  
+  // Loading state
+  document.body.style.pointerEvents = 'none';
+  document.body.style.cursor = 'wait';
+  
+  // Track navigation
+  trackEvent('section_navigate', section);
+  
+  // Hide all sections
   document.querySelectorAll(".flow").forEach(s => {
     s.classList.remove("active");
   });
-  // Muestra la sección solicitada
+  
+  // Show requested section
   setTimeout(() => {
     document.getElementById(section).classList.add("active");
     
-    // Desplazar la vista hacia el contenedor principal
-    const flowContainer = document.querySelector('.flow-container');
-    if (flowContainer) {
-      // Calcula la posición del contenedor relativa al viewport
-      const containerTop = flowContainer.getBoundingClientRect().top + window.pageYOffset;
-      
-      // Desplaza suavemente a la posición del contenedor
-      window.scrollTo({
-        top: containerTop - 20, // Un pequeño margen para mejor visualización
-        behavior: 'smooth'
-      });
-    }
-  }, 50);
-}
-
-function openPack(pack, desc) {
-  selectedPack = pack;
-  selectedDesc = desc;
-  document.getElementById('packTitle').innerText = `${pack} (${desc})`;
-  show("catalog");
-}
-
-function selectOption(qty, price) {
-  selectedQty = qty;
-  selectedPrice = price;
-  show("buy");
-}
-
-function goBack(section) {
-  show(section);
-}
-
-function toggleTheme() {
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-}
-
-function goWhatsApp() {
-  const msg =
-    `Hola 👋 Quiero el ${selectedPack} (${selectedDesc}) — ${selectedQty} pares por $${selectedPrice}`;
-  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`, "_blank");
-}
-
-// Asegura que la página comience en la parte superior al recargar
-window.addEventListener('load', function() {
-  // Solo para móviles - previene scroll automático del navegador
-  if (window.innerWidth <= 768) {
+    // Restore interaction
     setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 100);
-  }
-});
-
-// Detectar cambios en la orientación del dispositivo
-window.addEventListener('orientationchange', function() {
-  setTimeout(() => {
+      document.body.style.pointerEvents = 'auto';
+      document.body.style.cursor = 'default';
+      isLoading = false;
+    }, 300);
+    
+    // Scroll to container
     const flowContainer = document.querySelector('.flow-container');
     if (flowContainer) {
       const containerTop = flowContainer.getBoundingClientRect().top + window.pageYOffset;
@@ -430,8 +550,319 @@ window.addEventListener('orientationchange', function() {
         behavior: 'smooth'
       });
     }
-  }, 300);
+  }, 150);
+}
+
+function openPack(pack, desc) {
+  vibrate();
+  trackEvent('pack_select', pack);
+  
+  selectedPack = pack;
+  selectedDesc = desc;
+  document.getElementById('packTitle').innerText = `${pack} (${desc})`;
+  show("catalog");
+}
+
+function selectOption(qty, price) {
+  vibrate();
+  trackEvent('price_select', `${qty}_pairs_${price}`);
+  
+  // Deselect all buttons first
+  document.querySelectorAll('.prices button').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  
+  // Mark selected
+  if (event && event.target) {
+    event.target.classList.add('selected');
+  }
+  
+  selectedQty = qty;
+  selectedPrice = price;
+  show("buy");
+}
+
+function goBack(section) {
+  vibrate();
+  trackEvent('back_navigate', section);
+  show(section);
+}
+
+function toggleTheme() {
+  vibrate();
+  const isDark = document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+  trackEvent('theme_toggle', isDark ? 'dark' : 'light');
+  
+  // Save preference
+  localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+}
+
+function goWhatsApp() {
+  // Validation
+  if (!selectedPack || !selectedQty || !selectedPrice) {
+    const buyBtn = document.querySelector('.buy-btn');
+    const originalText = buyBtn.textContent;
+    
+    buyBtn.textContent = '⚠️ Selecciona opciones primero';
+    buyBtn.style.background = '#ff4757';
+    buyBtn.disabled = true;
+    
+    setTimeout(() => {
+      buyBtn.textContent = originalText;
+      buyBtn.style.background = '#25D366';
+      buyBtn.disabled = false;
+    }, 2000);
+    
+    vibrate([50, 50, 50]);
+    trackEvent('checkout_error', 'missing_selection');
+    return;
+  }
+  
+  const msg = `Hola 👋 Quiero el ${selectedPack} (${selectedDesc}) — ${selectedQty} pares por $${selectedPrice}`;
+  trackEvent('whatsapp_redirect', `${selectedPack}_${selectedQty}`);
+  
+  // Open WhatsApp
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(msg)}`;
+  window.open(whatsappUrl, "_blank");
+}
+
+// ===== UX ENHANCEMENTS =====
+function vibrate(pattern = 10) {
+  if ('vibrate' in navigator) {
+    navigator.vibrate(pattern);
+  }
+}
+
+// ===== ANALYTICS (LocalStorage-based) =====
+function trackEvent(action, label) {
+  const eventData = {
+    action: action,
+    label: label,
+    timestamp: Date.now(),
+    userAgent: navigator.userAgent.substring(0, 100),
+    path: window.location.pathname,
+    screen: `${window.innerWidth}x${window.innerHeight}`
+  };
+  
+  // Store in localStorage
+  try {
+    let analytics = JSON.parse(localStorage.getItem('ws_analytics') || '[]');
+    analytics.push(eventData);
+    
+    // Keep only last 50 events
+    if (analytics.length > 50) {
+      analytics = analytics.slice(-50);
+    }
+    
+    localStorage.setItem('ws_analytics', JSON.stringify(analytics));
+  } catch (e) {
+    console.log('Analytics error:', e);
+  }
+  
+  // Console log for debugging
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.log('📊 Event:', action, label);
+  }
+}
+
+// ===== OFFLINE DETECTION =====
+function showOnlineStatus(isOnline) {
+  const existingBanner = document.getElementById('connection-banner');
+  if (existingBanner) existingBanner.remove();
+  
+  const banner = document.createElement('div');
+  banner.id = 'connection-banner';
+  banner.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    z-index: 10001;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+    ${isOnline ? 
+      'background: #25D366; color: white;' : 
+      'background: #ff4757; color: white;'
+    }
+  `;
+  
+  banner.textContent = isOnline ? 
+    '✅ Conectado nuevamente' : 
+    '⚠️ Sin conexión. Funcionalidad limitada';
+  
+  document.body.appendChild(banner);
+  
+  // Animate in
+  setTimeout(() => {
+    banner.style.transform = 'translateY(0)';
+    
+    // Animate out after delay
+    setTimeout(() => {
+      banner.style.transform = 'translateY(-100%)';
+      setTimeout(() => {
+        if (banner.parentNode) banner.parentNode.removeChild(banner);
+      }, 300);
+    }, 3000);
+  }, 100);
+  
+  trackEvent('connection_change', isOnline ? 'online' : 'offline');
+}
+
+// ===== IMAGE ERROR HANDLING =====
+function handleImageError(img) {
+  img.style.opacity = '0.7';
+  img.style.backgroundColor = 'var(--muted)';
+  img.style.borderRadius = 'var(--radius)';
+  
+  // Create fallback
+  const fallback = document.createElement('div');
+  fallback.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    font-size: 14px;
+    background: var(--muted);
+    border-radius: inherit;
+  `;
+  fallback.textContent = img.alt || 'Imagen';
+  
+  img.parentNode.insertBefore(fallback, img.nextSibling);
+  img.style.display = 'none';
+  
+  trackEvent('image_error', img.src.split('/').pop());
+}
+
+// ===== PERFORMANCE OPTIMIZATIONS =====
+function initPerformanceTracking() {
+  // Page load time
+  window.addEventListener('load', () => {
+    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+    document.getElementById('pageLoadInfo').textContent = `Cargado en ${loadTime}ms`;
+    trackEvent('page_load', `${loadTime}ms`);
+  });
+  
+  // Stagger animations for cards
+  document.querySelectorAll('.card').forEach((card, i) => {
+    card.style.setProperty('--i', i);
+  });
+}
+
+// ===== SERVICE WORKER (PWA) =====
+function registerServiceWorker() {
+  if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log('Service Worker registrado:', registration.scope);
+      trackEvent('service_worker', 'registered');
+    }).catch(error => {
+      console.log('Service Worker falló:', error);
+    });
+  }
+}
+
+// ===== INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', function() {
+  // Set initial theme from localStorage or preference
+  const savedTheme = localStorage.getItem('theme-preference');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'light' || (!savedTheme && !prefersDark)) {
+    document.body.classList.replace('dark', 'light');
+  }
+  
+  // Initialize card animations
+  initPerformanceTracking();
+  
+  // Connection monitoring
+  window.addEventListener('online', () => showOnlineStatus(true));
+  window.addEventListener('offline', () => showOnlineStatus(false));
+  
+  // Register service worker (commented as you need to create sw.js)
+  // registerServiceWorker();
+  
+  // Initial track
+  trackEvent('page_view', 'home');
+  
+  // Auto-scroll prevention on mobile
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+  }
+  
+  // Orientation change handler
+  window.addEventListener('orientationchange', function() {
+    setTimeout(() => {
+      const flowContainer = document.querySelector('.flow-container');
+      if (flowContainer) {
+        const containerTop = flowContainer.getBoundingClientRect().top + window.pageYOffset;
+        window.scrollTo({
+          top: containerTop - 20,
+          behavior: 'smooth'
+        });
+      }
+    }, 300);
+  });
+  
+  // Error handling for all images
+  document.querySelectorAll('img').forEach(img => {
+    if (!img.onerror) {
+      img.onerror = function() {
+        handleImageError(this);
+      };
+    }
+  });
+  
+  // Keyboard navigation support
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const activeSection = document.querySelector('.flow.active').id;
+      if (activeSection === 'catalog') goBack('home');
+      if (activeSection === 'buy') goBack('catalog');
+    }
+  });
+  
+  // Mark as loaded
+  setTimeout(() => {
+    document.body.classList.replace('js-loading', 'js-loaded');
+  }, 100);
 });
+
+// ===== PWA MANIFEST GENERATION =====
+// Note: You'll need to create a manifest.json file for full PWA support
+// Here's a template you can save as manifest.json:
+/*
+{
+  "name": "WebSock",
+  "short_name": "WebSock",
+  "description": "Calcetas esenciales entregadas a domicilio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#1e1e1e",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+*/
 </script>
 
 </body>
