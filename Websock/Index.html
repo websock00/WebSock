@@ -25,7 +25,7 @@ body {
   color: var(--text);
 }
 
-/* ===== RESET IMÁGENES ===== */
+/* ===== IMÁGENES ===== */
 img {
   display: block;
   max-width: 100%;
@@ -39,10 +39,20 @@ img {
 }
 
 section {
-  padding: 80px 0;
+  padding: 90px 0;
 }
 
-/* ===== BANNER LOGO ===== */
+h2 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+/* ===== BANNER ===== */
 .logo-banner {
   width: 100%;
   height: 32vh;
@@ -55,14 +65,14 @@ section {
   object-fit: cover;
 }
 
-/* ===== HERO EDITORIAL ===== */
+/* ===== HERO ===== */
 .editorial {
   margin-top: 60px;
 }
 
 .editorial-card {
   width: 100%;
-  aspect-ratio: 4 / 5; /* 🔥 clave Bershka */
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   border-radius: var(--radius);
 }
@@ -73,10 +83,9 @@ section {
   object-fit: cover;
 }
 
-/* ===== TEXTO HERO ===== */
 .hero-text {
-  max-width: 520px;
-  margin: 40px auto 0;
+  max-width: 540px;
+  margin: 42px auto 0;
   text-align: center;
   font-size: 18px;
   color: var(--muted);
@@ -86,7 +95,7 @@ section {
 .packs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 28px;
+  gap: 30px;
   margin-top: 50px;
 }
 
@@ -124,6 +133,7 @@ section {
 .card p {
   margin: 6px 0 0;
   color: var(--muted);
+  font-size: 15px;
 }
 
 /* ===== FLOW ===== */
@@ -189,8 +199,8 @@ section {
     </div>
 
     <p class="hero-text">
-      Calcetas esenciales, cómodas y funcionales.  
-      Elige tu paquete y recíbelas directo en casa.
+      Calcetas esenciales, cómodas y funcionales.<br>
+      Diseñadas para el día a día.
     </p>
   </div>
 </section>
@@ -199,6 +209,7 @@ section {
 <section id="home">
   <div class="container">
     <h2>Paquetes disponibles</h2>
+    <p class="section-subtitle">Elige el pack que mejor se adapte a tu estilo</p>
 
     <div class="packs">
       <div class="card" onclick="openPack('WorkPack','calcetas negras')">
@@ -206,7 +217,7 @@ section {
           <img src="work.jpg">
         </div>
         <h3>WorkPack</h3>
-        <p>Calcetas negras</p>
+        <p>Negras · Uso diario</p>
       </div>
 
       <div class="card" onclick="openPack('HomePack','calcetas grises')">
@@ -214,7 +225,7 @@ section {
           <img src="home.jpeg">
         </div>
         <h3>HomePack</h3>
-        <p>Calcetas grises</p>
+        <p>Grises · Casual</p>
       </div>
 
       <div class="card" onclick="openPack('SportPack','calcetas blancas')">
@@ -222,7 +233,16 @@ section {
           <img src="sport.jpg">
         </div>
         <h3>SportPack</h3>
-        <p>Calcetas blancas</p>
+        <p>Blancas · Activo</p>
+      </div>
+
+      <!-- 🔥 NUEVO MIXPACK -->
+      <div class="card" onclick="openPack('MixPack','colores surtidos')">
+        <div class="card-image">
+          <img src="mix.jpg">
+        </div>
+        <h3>MixPack</h3>
+        <p>Negro · Gris · Blanco</p>
       </div>
     </div>
   </div>
@@ -232,7 +252,7 @@ section {
 <section id="catalog" class="hidden">
   <div class="container">
     <h2 id="packTitle"></h2>
-    <p>Selecciona la cantidad</p>
+    <p class="section-subtitle">Selecciona la cantidad</p>
 
     <div class="prices">
       <button onclick="selectOption(1,20)">1 par — $20</button>
@@ -246,6 +266,7 @@ section {
 <section id="buy" class="hidden">
   <div class="container" style="text-align:center;">
     <h2>Finaliza tu compra</h2>
+    <p class="section-subtitle">Te redirigiremos a WhatsApp</p>
 
     <button class="buy-btn" onclick="goWhatsApp()">
       <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
@@ -280,8 +301,9 @@ function selectOption(qty, price) {
 }
 
 function goWhatsApp() {
-  const message = `Hola 👋 Quiero comprar el ${selectedPack} (${selectedDesc}) — ${selectedQty} pares por $${selectedPrice}`;
-  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+  const message =
+    `Hola 👋 Quiero comprar el ${selectedPack} (${selectedDesc}) — ${selectedQty} pares por $${selectedPrice}`;
+  window.open(`https://wa.me/${9642154328}?text=${encodeURIComponent(message)}`, "_blank");
 }
 </script>
 
